@@ -1,88 +1,76 @@
-import React from "react";
-import { createPopper } from "@popperjs/core";
+import React, {useEffect, useRef, useState} from "react";
+import avatar from "assets/img/team-1-800x800.jpg";
 
 const UserDropdown = () => {
-  // dropdown props
-  const [dropdownPopoverShow, setDropdownPopoverShow] = React.useState(false);
-  const btnDropdownRef = React.createRef();
-  const popoverDropdownRef = React.createRef();
-  const openDropdownPopover = () => {
-    createPopper(btnDropdownRef.current, popoverDropdownRef.current, {
-      placement: "bottom-start",
-    });
-    setDropdownPopoverShow(true);
-  };
-  const closeDropdownPopover = () => {
-    setDropdownPopoverShow(false);
-  };
-  return (
-    <>
-      <a
-        className="text-blueGray-500 block"
-        href="#pablo"
-        ref={btnDropdownRef}
-        onClick={(e) => {
-          e.preventDefault();
-          dropdownPopoverShow ? closeDropdownPopover() : openDropdownPopover();
-        }}
-      >
-        <div className="items-center flex">
-          <span className="w-12 h-12 text-sm text-white bg-blueGray-200 inline-flex items-center justify-center rounded-full">
+    const [open, setOpen] = useState(false);
+    const dropdownRef = useRef(null);
+
+    // Close dropdown if clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        window.location.href = "/auth/login";
+    };
+
+    return (
+        <div className="relative" ref={dropdownRef}>
+            <button
+                onClick={() => setOpen(!open)}
+                className="text-blueGray-500 block focus:outline-none"
+            >
+                <div className="items-center flex">
+          <span
+              className="w-12 h-12 text-sm text-white bg-blueGray-200 inline-flex items-center justify-center rounded-full">
             <img
-              alt="..."
-              className="w-full rounded-full align-middle border-none shadow-lg"
-              src={require("assets/img/team-1-800x800.jpg").default}
+                alt="user avatar"
+                className="w-full rounded-full align-middle border-none shadow-lg"
+                src={avatar}
             />
           </span>
+                </div>
+            </button>
+
+            {open && (
+                <div
+                    className="absolute right-0 mt-2 bg-white text-base z-50 py-2 list-none text-left rounded shadow-lg min-w-48">
+                    <a
+                        href="#profile"
+                        className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap text-blueGray-700"
+                        onClick={(e) => e.preventDefault()}
+                    >
+                        Profile
+                    </a>
+                    <a
+                        href="#settings"
+                        className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap text-blueGray-700"
+                        onClick={(e) => e.preventDefault()}
+                    >
+                        Settings
+                    </a>
+                    <div className="h-0 my-2 border border-solid border-blueGray-100"/>
+                    <a
+                        href="#logout"
+                        className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap text-blueGray-700"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            handleLogout();
+                        }}
+                    >
+                        Logout
+                    </a>
+                </div>
+            )}
         </div>
-      </a>
-      <div
-        ref={popoverDropdownRef}
-        className={
-          (dropdownPopoverShow ? "block " : "hidden ") +
-          "bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48"
-        }
-      >
-        <a
-          href="#pablo"
-          className={
-            "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-          }
-          onClick={(e) => e.preventDefault()}
-        >
-          Action
-        </a>
-        <a
-          href="#pablo"
-          className={
-            "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-          }
-          onClick={(e) => e.preventDefault()}
-        >
-          Another action
-        </a>
-        <a
-          href="#pablo"
-          className={
-            "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-          }
-          onClick={(e) => e.preventDefault()}
-        >
-          Something else here
-        </a>
-        <div className="h-0 my-2 border border-solid border-blueGray-100" />
-        <a
-          href="#pablo"
-          className={
-            "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-          }
-          onClick={(e) => e.preventDefault()}
-        >
-          Seprated link
-        </a>
-      </div>
-    </>
-  );
+    );
 };
 
 export default UserDropdown;

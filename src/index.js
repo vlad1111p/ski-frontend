@@ -13,6 +13,7 @@ import Landing from "views/Landing.js";
 import Profile from "views/Profile.js";
 import Index from "views/Index.js";
 import {createRoot} from "react-dom/client";
+import AuthCallback from "./views/auth/AuthCallback";
 
 //TODO save user authentication state in localStorage or context
 const isAuthenticated = () => {
@@ -40,6 +41,7 @@ root.render(
         <Switch>
             {/* Protected routes */}
             <PrivateRoute path="/admin" component={Admin}/>
+            <Route path="/auth/callback" exact component={AuthCallback}/>
             <Route path="/auth" component={Auth}/>
             <Route path="/landing" exact component={Landing}/>
             <PrivateRoute path="/profile" exact component={Profile}/>
