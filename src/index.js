@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -13,10 +12,11 @@ import Auth from "layouts/Auth.js";
 import Landing from "views/Landing.js";
 import Profile from "views/Profile.js";
 import Index from "views/Index.js";
+import {createRoot} from "react-dom/client";
 
 //TODO save user authentication state in localStorage or context
 const isAuthenticated = () => {
-    return false;
+    return !!localStorage.getItem("token");
 };
 
 const PrivateRoute = ({component: Component, ...rest}) => (
@@ -32,7 +32,10 @@ const PrivateRoute = ({component: Component, ...rest}) => (
     />
 );
 
-ReactDOM.render(
+const container = document.getElementById("root");
+const root = createRoot(container);
+
+root.render(
     <BrowserRouter>
         <Switch>
             {/* Protected routes */}
@@ -43,6 +46,5 @@ ReactDOM.render(
             <Route path="/" exact component={Index}/>
             <Redirect from="*" to="/"/>
         </Switch>
-    </BrowserRouter>,
-    document.getElementById("root")
+    </BrowserRouter>
 );
